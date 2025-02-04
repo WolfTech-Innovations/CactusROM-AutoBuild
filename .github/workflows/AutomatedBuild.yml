@@ -68,7 +68,7 @@ jobs:
           find $base_dir -type f -name "*.img" | while read image_path; do
             # Extract device name from the directory name (device name = directory name containing .img)
             device_name=$(basename $(dirname "$image_path"))
-            echo "Uploading image for device: $device_name from $image_path"
+            echo "Uploading image from $image_path"
             
             # Upload the image to SourceForge using rsync
             rsync -avz -e "sshpass -p $SOURCEFORGE_PASSWORD ssh -o StrictHostKeyChecking=accept-new" "$image_path" "$SOURCEFORGE_USER@$SOURCEFORGE_HOST:$SOURCEFORGE_PATH/$device_name/"
