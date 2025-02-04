@@ -25,7 +25,7 @@ jobs:
         run: |
             mkdir GP3A
             cd GP3A
-            pmbootstrap pull
+            pmbootstrap pull -c gp3a.cfg
             pmbootstrap build --envkernel linux-postmarketos-google-pixel-3a
             pmbootstrap chroot apk add firefox-esr mobile-config-firefox plasma-mobile
             pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
@@ -37,7 +37,7 @@ jobs:
         run: |
             mkdir P64PP
             cd P64PP
-            pmbootstrap pull
+            pmbootstrap pull -c p64pp.cfg
             pmbootstrap build --envkernel linux-postmarketos-pine64-pinephone
             pmbootstrap chroot apk add firefox-esr mobile-config-firefox plasma-mobile
             pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
