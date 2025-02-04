@@ -1,0 +1,71 @@
+name: Build and Upload CactusROM Images
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up pmbootstrap
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pmbootstrap sshpass
+
+      - name: Build for Devices
+        run: |
+          # Define your devices here
+          devices=("motorola-harpia" "motorola-potter" "google-pixel-3a" "samsung-a3" "pine64-pinephone" "generic-x86_64")
+          
+          for device in "${devices[@]}"; do
+            echo "Initializing pmbootstrap for device: $device"
+            pmbootstrap init --no-chroot --device "$device" --ui plasma-mobile
+            pmbootstrap install --no-chroot
+            pmbootstrap chroot apk add firefox-esr mobile-config-firefox
+            pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
+            pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
+            pmbootstrap build --no-chroot --device "$device"
+          done
+
+      - name: Find the Base Directory Containing .img Files (up to 9 layers)
+        id: find_base_dir
+        run: |
+          # Automatically find the base directory containing .img files up to 9 layers deep
+          base_dir=$(find . -maxdepth 9 -type f -name "*.img" -exec dirname {} \; | head -n 1)
+          echo "Base directory found: $base_dir"
+          echo "::set-output name=base_dir::$base_dir"
+
+      - name: Upload Images to SourceForge
+        run: |
+          # Install SSH client
+          sudo apt-get install -y openssh-client
+
+          # Define SourceForge details
+          SOURCEFORGE_USER="spoinkoscdn"
+          SOURCEFORGE_PROJECT="cactusrom"
+          SOURCEFORGE_HOST="web.sourceforge.net"
+          SOURCEFORGE_PATH="/home/pfs/project/c/cactusrom/releases/"
+
+          # Retrieve base directory found in previous step
+          base_dir="${{ steps.find_base_dir.outputs.base_dir }}"
+
+          # Automatically find the image directories that contain .img files and upload them
+          find $base_dir -type f -name "*.img" | while read image_path; do
+            # Extract device name from the directory name (device name = directory name containing .img)
+            device_name=$(basename $(dirname "$image_path"))
+            echo "Uploading image for device: $device_name from $image_path"
+            
+            # Upload the image to SourceForge using rsync
+            rsync -avz -e "sshpass -p $SOURCEFORGE_PASSWORD ssh -o StrictHostKeyChecking=accept-new" "$image_path" "$SOURCEFORGE_USER@$SOURCEFORGE_HOST:$SOURCEFORGE_PATH/$device_name/"
+          done
+        env:
+          SOURCEFORGE_PASSWORD: ${{ secrets.SOURCEFORGE_PASSWORD }}
