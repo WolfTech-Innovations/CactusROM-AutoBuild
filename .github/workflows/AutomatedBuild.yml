@@ -24,16 +24,16 @@ jobs:
       - name: Build for Devices
         run: |
           # Define your devices here
-          devices=("motorola-harpia" "motorola-potter" "google-pixel-3a" "samsung-a3" "pine64-pinephone" "generic-x86_64")
+          devices=("motorola-harpia" "motorola-potter" "google-pixel-3a" "samsung-a3" "pine64-pinephone" "generic-x86_64"
           
           for device in "${devices[@]}"; do
             echo "Initializing pmbootstrap for device: $device"
-            pmbootstrap init --no-chroot --device "$device" --ui plasma-mobile
-            pmbootstrap install --no-chroot
+            pmbootstrap init
+            pmbootstrap install
             pmbootstrap chroot apk add firefox-esr mobile-config-firefox
             pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
             pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
-            pmbootstrap build --no-chroot --device "$device"
+            pmbootstrap install --android-recovery-zip
           done
 
       - name: Find the Base Directory Containing .img Files (up to 9 layers)
