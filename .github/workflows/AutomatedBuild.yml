@@ -25,8 +25,7 @@ jobs:
         run: |
             mkdir GP3A
             cd GP3A
-            pmbootstrap init 
-            cp gp3a.cfg ~/.config/pmbootstrap_v3.cfg
+            pmbootstrap init --config ./gp3a.cfg
             pmbootstrap chroot apk add firefox-esr mobile-config-firefox plasma-mobile
             pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
             pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
@@ -37,8 +36,7 @@ jobs:
         run: |
             mkdir P64PP
             cd P64PP
-            cp p64pp.cfg ~/.config/pmbootstrap_v3.cfgp64pp.cfg
-            pmbootstrap init 
+            pmbootstrap init --config ./p64pp.cfg
             pmbootstrap chroot apk add firefox-esr mobile-config-firefox plasma-mobile
             pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
             pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
