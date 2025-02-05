@@ -45,7 +45,7 @@ jobs:
         id: find_base_dir
         run: |
           # Automatically find the base directory containing .img files up to 9 layers deep
-          base_dir=$(find . -maxdepth 9 -type f -name "*.img" -exec dirname {} \; | head -n 1)
+          base_dir=$(find . -maxdepth 9 -type f -name "*.zip" -exec dirname {} \; | head -n 1)
           echo "Base directory found: $base_dir"
           echo "::set-output name=base_dir::$base_dir"
 
