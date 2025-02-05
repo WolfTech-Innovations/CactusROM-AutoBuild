@@ -23,7 +23,7 @@ jobs:
 
       - name: Set up pmaports
         run: |
-          echo -e '\google\pixel3a\nfp4\n\n\nplasma-mobile\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | pmbootstrap init || true
+          echo -e '\google\pixel3a\n\n\nplasma-mobile\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | pmbootstrap init || true
 
       - name: Build for Google Pixel 3a
         run: |
@@ -37,7 +37,7 @@ jobs:
 
       - name: Set up pmaports
         run: |
-          echo -e '\pine64\pinephone\nfp4\n\n\nplasma-mobile\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | pmbootstrap init || true
+          echo -e '\pine64\pinephone\n\n\nplasma-mobile\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | pmbootstrap init || true
       
       - name: Build for Pine64 PinePhone
         run: |
