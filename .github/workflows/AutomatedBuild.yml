@@ -21,10 +21,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y pmbootstrap sshpass
 
-      - name: Set up pmaports
-        run: |
-          echo -e '\google\pixel3a\n\n\nplasma-mobile\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | pmbootstrap init || true
-
       - name: Build for Google Pixel 3a
         run: |
             mkdir GP3A
@@ -35,10 +31,6 @@ jobs:
             pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
             pmbootstrap install --android-recovery-zip
 
-      - name: Set up pmaports
-        run: |
-          echo -e '\pine64\pinephone\n\n\nplasma-mobile\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n' | pmbootstrap init || true
-      
       - name: Build for Pine64 PinePhone
         run: |
             mkdir P64PP
