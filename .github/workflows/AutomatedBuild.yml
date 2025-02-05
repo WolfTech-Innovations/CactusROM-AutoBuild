@@ -16,12 +16,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up pmbootstrap
+      - name: Set up sshpass
         run: |
           sudo apt-get update
-          sudo apt-get install -y pmbootstrap sshpass
+          sudo apt-get install -y sshpass
 
-      - name: Upload Images to SourceForge
+      - name: Upload Files to SourceForge
         run: |
           # Install SSH client
           sudo apt-get install -y openssh-client
@@ -34,6 +34,7 @@ jobs:
 
             # Upload the image to SourceForge using rsync
             rsync -avz -e "sshpass -p $SOURCEFORGE_PASSWORD ssh -o StrictHostKeyChecking=accept-new" "index.html" "$SOURCEFORGE_USER@$SOURCEFORGE_HOST:$SOURCEFORGE_PATH/"
+            echo [Done!]
           done
         env:
           SOURCEFORGE_PASSWORD: ${{ secrets.SOURCEFORGE_PASSWORD }}
