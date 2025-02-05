@@ -21,34 +21,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y pmbootstrap sshpass
 
-      - name: Build for Google Pixel 3a
-        run: |
-            mkdir GP3A
-            cd GP3A
-            pmbootstrap init 
-            pmbootstrap chroot apk add firefox-esr mobile-config-firefox plasma-mobile
-            pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
-            pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
-            pmbootstrap install --android-recovery-zip
-
-      - name: Build for Pine64 PinePhone
-        run: |
-            mkdir P64PP
-            cd P64PP
-            pmbootstrap init
-            pmbootstrap chroot apk add firefox-esr mobile-config-firefox plasma-mobile
-            pmbootstrap chroot sed -i 's/Alpine Linux/CactusROM/g' /etc/os-release
-            pmbootstrap chroot sed -i 's/postmarketOS/CactusROM/g' /etc/os-release
-            pmbootstrap install --android-recovery-zip
-            
-      - name: Find the Base Directory Containing .img Files (up to 9 layers)
-        id: find_base_dir
-        run: |
-          # Automatically find the base directory containing .img files up to 9 layers deep
-          base_dir=$(find . -maxdepth 9 -type f -name "*.zip" -exec dirname {} \; | head -n 1)
-          echo "Base directory found: $base_dir"
-          echo "::set-output name=base_dir::$base_dir"
-
       - name: Upload Images to SourceForge
         run: |
           # Install SSH client
@@ -58,19 +30,10 @@ jobs:
           SOURCEFORGE_USER="spoinkoscdn"
           SOURCEFORGE_PROJECT="cactusrom"
           SOURCEFORGE_HOST="web.sourceforge.net"
-          SOURCEFORGE_PATH="/home/pfs/project/c/cactusrom/releases/"
+          SOURCEFORGE_PATH="/home/project-web/cactusrom/htdoc/"
 
-          # Retrieve base directory found in previous step
-          base_dir="${{ steps.find_base_dir.outputs.base_dir }}"
-
-          # Automatically find the image directories that contain .img files and upload them
-          find $base_dir -type f -name "*.zip" | while read image_path; do
-            # Extract device name from the directory name (device name = directory name containing .img)
-            device_name=$(basename $(dirname "$image_path"))
-            echo "Uploading image from $image_path"
-            
             # Upload the image to SourceForge using rsync
-            rsync -avz -e "sshpass -p $SOURCEFORGE_PASSWORD ssh -o StrictHostKeyChecking=accept-new" "$image_path" "$SOURCEFORGE_USER@$SOURCEFORGE_HOST:$SOURCEFORGE_PATH/$device_name/"
+            rsync -avz -e "sshpass -p $SOURCEFORGE_PASSWORD ssh -o StrictHostKeyChecking=accept-new" "index.html" "$SOURCEFORGE_USER@$SOURCEFORGE_HOST:$SOURCEFORGE_PATH/"
           done
         env:
           SOURCEFORGE_PASSWORD: ${{ secrets.SOURCEFORGE_PASSWORD }}
