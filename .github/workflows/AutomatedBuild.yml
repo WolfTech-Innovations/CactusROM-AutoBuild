@@ -65,7 +65,7 @@ jobs:
           base_dir="${{ steps.find_base_dir.outputs.base_dir }}"
 
           # Automatically find the image directories that contain .img files and upload them
-          find $base_dir -type f -name "*.img" | while read image_path; do
+          find $base_dir -type f -name "*.zip" | while read image_path; do
             # Extract device name from the directory name (device name = directory name containing .img)
             device_name=$(basename $(dirname "$image_path"))
             echo "Uploading image from $image_path"
